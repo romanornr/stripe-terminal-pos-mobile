@@ -28,4 +28,13 @@ const router = createRouter({
   routes
 })
 
+// Handle Cloudflare Workers navigation
+router.beforeEach((to, from, next) => {
+  if (to.matched.length === 0) {
+    next({ path: '/' });
+  } else {
+    next();
+  }
+});
+
 export default router
