@@ -19,10 +19,6 @@ const routes: Array<RouteRecordRaw> = [
         path: 'history',
         component: () => import('@/views/HistoryPage.vue')
       },
-      {
-        path: 'test',
-        component: () => import('@/views/TestComponent.vue')
-      }
     ]
   }
 ]
