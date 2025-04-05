@@ -269,13 +269,26 @@ const handlePayment = async () => {
 async function handleConnect() {
   try {
     await terminalService.initialize();
-    const disoveredReaders = await terminalService.discoverReaders();
-    const connectedReader = await terminalService.connectReader(disoveredReaders.data[0]);
-    const connected = connectedReader.success;
-    if (disoveredReaders.success) {
-      console.log('Disovered readers:', disoveredReaders.data);
+    const discoveredReaders = await terminalService.discoverReaders();
+
+    // Check if discovering readers was successful before accessing data
+    if (discoveredReaders.success) {
+      if (discoveredReaders.data.length > 0) {
+        const connectedReader = await terminalService.connectReader(discoveredReaders.data[0]);
+        if (connectedReader.success) {
+          console.log('Reader connected successfully:', connectedReader.data);
+        } else {
+          console.error('Error connecting reader:', connectedReader.error);
+          errorMessage.value = connectedReader.error.message || 'Failed to connect reader';
+        }
+      } else {
+         console.warn('No readers discovered.');
+         errorMessage.value = 'No readers discovered.';
+      }
+      console.log('Discovered readers:', discoveredReaders.data);
     } else {
-      console.error('Error discovering readers:', disoveredReaders.error);
+      console.error('Error discovering readers:', discoveredReaders.error);
+      errorMessage.value = discoveredReaders.error.message || 'Failed to discover readers';
     }
   } catch (error: any) {
     console.error('Error initializing terminal service:', error);
